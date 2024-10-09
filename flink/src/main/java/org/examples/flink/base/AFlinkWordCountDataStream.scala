@@ -21,6 +21,10 @@ object AFlinkWordCountDataStream {
 
     // 准备环境并读取文件
     val env = StreamExecutionEnvironment.getExecutionEnvironment
+    // 可以设置全局并行度
+    // 等价于作业提交时设置的并行度，但是以代码中设置的优先级为准
+    // 并行度优先级： 特定算子的并行度 > 作业指定的全局并行度 > 作业提交时候设置的并行度 > 集群conf中设置的并行度
+//    env.setParallelism(2)
     // 有界流，从文件读取数据
     // val lineDS = env.readTextFile("data/word.csv")
     // 无界流，直接从服务器接收数据
@@ -45,6 +49,8 @@ object AFlinkWordCountDataStream {
     lineDSMaped.keyBy(item => item._1)
       .sum(1)
       .print()
+    // 也可以给特定算子指定并行度
+//      .setParallelism(2)
 
     // 流处理需要 execute 才会开始执行，否则所有代码都不会执行。
     env.execute()
