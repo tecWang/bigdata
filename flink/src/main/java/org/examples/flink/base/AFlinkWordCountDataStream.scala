@@ -8,6 +8,7 @@ package org.examples.flink
 // 1. org.apache.flink.streaming.api.scala
 // 2. org.apache.flink.streaming.api.scala.Environment
 // 需要导入第一个package
+import org.apache.flink.api.common.RuntimeExecutionMode
 import org.apache.flink.streaming.api.scala._
 
 /*
@@ -21,10 +22,16 @@ object AFlinkWordCountDataStream {
 
     // 准备环境并读取文件
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    // 可以设置全局并行度
-    // 等价于作业提交时设置的并行度，但是以代码中设置的优先级为准
+
+    // 可以设置全局并行度，等价于作业提交时设置的并行度，但是以代码中设置的优先级为准
     // 并行度优先级： 特定算子的并行度 > 作业指定的全局并行度 > 作业提交时候设置的并行度 > 集群conf中设置的并行度
-//    env.setParallelism(2)
+    // env.setParallelism(2)
+
+    // 设置流处理还是批处理
+      // 不建议在程序里边设置执行模式
+      // 可以选择在提交作业的时候指定参数的方式实现: ./bin/flink run -Dexecution.runtime-mode=BATCH
+    // env.setRuntimeMode(RuntimeExecutionMode.BATCH)
+
     // 有界流，从文件读取数据
     // val lineDS = env.readTextFile("data/word.csv")
     // 无界流，直接从服务器接收数据
